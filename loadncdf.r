@@ -37,18 +37,17 @@ all=full_join(all,mapPointsFire)
 
 df_sum= all %>%
   rowwise() %>%
-  mutate(tot=sum(bio_flux_opt,ocn_flux_opt,fossil_flux_imp,fire_flux_imp))
+  mutate(tot=sum(bio_flux_opt,ocn_flux_opt)*12*3600*24*30)
 
 write.csv(df_sum, file=paste0(substr(cname,1,nchar(cname)-3),".csv"), row.names=F)
 
 
-datain <- raster(cname)
+datain <- raster(cname,varname='bio_flux_opt')
 datain <- setMinMax(datain)
 
 print(datain)
 
 saveRDS(datain,file=paste0("200101",'.rds'))
-
 
 
 # plot an example
@@ -59,4 +58,4 @@ mapTheme <- rasterTheme(region = rev(brewer.pal(10, "RdBu")))
 
 plt <- levelplot(datain, margin = F, cuts=30, pretty=TRUE, par.settings = mapTheme,
                  main="Carbon Flux")
- plt + layer(sp.lines(world.outlines.sp, col = "black", lwd = 0.5))
+plt + layer(sp.lines(world.outlines.sp, col = "black", lwd = 0.5))
