@@ -24,20 +24,31 @@ ocn <- raster(cname,varname='ocn_flux_opt')
 fossil <- raster(cname,varname='fossil_flux_imp')
 fire <- raster(cname,varname='fire_flux_imp')
 
+monthly=12*3600*24*365
+
 #Put data into data frame
 mapPointsBio <- as.data.frame(rasterToPoints(bio))
 mapPointsOcn <- as.data.frame(rasterToPoints(ocn))
 mapPointsFossil <- as.data.frame(rasterToPoints(fossil))
 mapPointsFire <- as.data.frame(rasterToPoints(fire))
 
+
 #merge data frames
 all=full_join(mapPointsBio,mapPointsOcn)
 all=full_join(all,mapPointsFossil)
 all=full_join(all,mapPointsFire)
 
+
+#jet get biosphere flux
+mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt*monthly
+write.csv(mapPointsBio, file=paste0(substr(cname,1,nchar(cname)-3),".csv"), row.names=F)
+
 df_sum= all %>%
   rowwise() %>%
-  mutate(tot=sum(bio_flux_opt,ocn_flux_opt)*12*3600*24*30)
+  mutate(tot=sum(bio_flux_opt,ocn_flux_opt))
+
+df_sum$bio_flux_opt = df_sum$bio_flux_opt*monthly 
+df_sum$tot = df_sum$tot*monthly
 
 write.csv(df_sum, file=paste0(substr(cname,1,nchar(cname)-3),".csv"), row.names=F)
 
