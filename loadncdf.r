@@ -7,9 +7,38 @@ library(maptools)
 library(maps)
 library(rasterVis)
 library(dplyr)
+library(jsonlite)
 workdir <-'//Users//mathewbrown//projects//Rstuff//carbonFlux'
 setwd(workdir)
-cname <- 'CT2016.flux1x1.200101.nc'
+
+#download several months
+datalist =list()
+
+for (i in 1:2){
+  site <- "ftp://aftp.cmdl.noaa.gov/products/carbontracker/co2/CT2016/fluxes/monthly/CT2016.flux1x1."
+  i = sprintf("%02d", i)
+  url = paste0(site,'2012',i,'.nc')
+  # print(url)
+  destfile <- paste0('Data/','2012',i,'.nc')
+  download.file(url,destfile)
+  #create csv
+  ncin <- nc_open(destfile)
+  bio <- raster(destfile,varname='bio_flux_opt')
+  mapPointsBio <- as.data.frame(rasterToPoints(bio))
+  mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt*12*3600*24*365
+  #create timestamp column
+  mapPointsBio <- mutate(mapPointsBio,yymm=paste0('2012',i))
+  datalist[[i]] <- mapPointsBio
+  
+  #write.csv(mapPointsBio, file=paste0(substr(destfile,1,nchar(destfile)-3),".csv"), row.names=F)
+  
+}
+
+#use jsonlite to combine csvs to json object https://roadtolarissa.com/hurricane/
+
+
+
+cname <- 'Data//CT2016.flux1x1.2012-monthly.nc'
 
 ncin <- nc_open(cname)
 
@@ -19,6 +48,7 @@ print(ncin)
 #tot = ncatt_get(ncin,'bio_flux_opt')
 
 # use raster to read ncdf
+time <- raster(cname,varname='time')
 bio <- raster(cname,varname='bio_flux_opt')
 ocn <- raster(cname,varname='ocn_flux_opt')
 fossil <- raster(cname,varname='fossil_flux_imp')
@@ -39,9 +69,6 @@ all=full_join(all,mapPointsFossil)
 all=full_join(all,mapPointsFire)
 
 
-#jet get biosphere flux
-mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt*monthly
-write.csv(mapPointsBio, file=paste0(substr(cname,1,nchar(cname)-3),".csv"), row.names=F)
 
 df_sum= all %>%
   rowwise() %>%

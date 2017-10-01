@@ -3,7 +3,7 @@
 
 
 
-d3.csv("CT2016.flux1x1.200101.csv", function(error, data) {
+d3.csv("Data/201201.csv", function(error, data) {
 
     d3.json("world.json", function(error, world) {
 
@@ -74,7 +74,7 @@ console.log(d3.max(data,function(d){
 console.log(d3.min(data, d => d.tot))
 
         var color = d3.scaleLinear()
-        .domain([d3.min(data, d => d.tot), 0, d3.max(data, d => d.tot)])
+        .domain([d3.min(data, d => d.bio_flux_opt), 0, d3.max(data, d => d.bio_flux_opt)])
         .range(["#081d58", "white", "red"]);
 
         // d3.scaleLinear()
