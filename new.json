@@ -1,0 +1,12 @@
+{"type":"Topology","objects":{"world":{"type":"Topology","bbox":[-180,-85.60903777459767,180,83.64513000000001]}},"arcs":[]}
+toposimplify -p 1 -f \
+  < world.json \
+  > ca-simple-topo.json
+
+  topoquantize 1e5 \
+  < 50m.json \
+  > q.json
+
+  geostitch world.json \
+  | geoproject 'd3.geoMercator()' \
+  > world-mercator.json
