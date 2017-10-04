@@ -1,21 +1,33 @@
 //draw on a map
 
+var test
+
+d3.loadData(["Data/janfeb.csv","world.json"], function(err,res){
+    animation(res[0], res[1])
+})
+
+function animation(res, world){
+    console.log(res)
+    data = res
 
 
 
-d3.csv("Data/201201.csv", function(error, data) {
+// d3.csv("Data/201201.csv", function(error, data) {
 
-    d3.json("world.json", function(error, world) {
+    // d3.json("world.json", function(error, world) {
 
         data.forEach(function(d) {
             d.bio_flux_opt = +d.bio_flux_opt
-            d.tot = +d.tot
+            // d.tot = +d.tot
         });
+
+        test = data
 
         var width = 960,
         height = 800;
 
-        var ctx = d3.select('#graphic-0')
+        var sel = d3.select('#graphic-0')
+        var ctx = sel
             .html('')
             .append('canvas')
             .attr('width',width)
@@ -30,7 +42,7 @@ d3.csv("Data/201201.csv", function(error, data) {
           // .rotate([-180, 0])
               // .precision(0.1);
 
-        var svg = d3.select("#graphic-0")
+        var svg = sel
             .append("svg")
             .attr("width", width)
             .attr("height", height)
@@ -68,42 +80,51 @@ d3.csv("Data/201201.csv", function(error, data) {
         .style("stroke",'#e0e0e0')
         .style("strokeWidth", .01);
 
-console.log(d3.max(data,function(d){
-    return d.tot
-}))
-console.log(d3.min(data, d => d.tot))
+        window.points = data
 
         var color = d3.scaleLinear()
         .domain([d3.min(data, d => d.bio_flux_opt), 0, d3.max(data, d => d.bio_flux_opt)])
         .range(["#081d58", "white", "red"]);
 
+        var times = ["201201","201202"]
+        var curTimeIndex = 0
+        window.animationtimer = d3.interval(() =>{
+            var top = sel.node().getBoundingClientRect().top
+            if (top < -500 || innerHeight < top) return
+
+            drawTime(times[curTimeIndex++ % times.length])
+        },200)
+
+        function drawTime(time){
+            ctx.clearRect(0,0, width, height)
+            test.filter(function(d){return d.yymm == time}).forEach(d => {
+                    // console.log(d)
+                ctx.beginPath()
+                var [x, y] = projection([d.x,d.y])
+                ctx.rect(x, y, 3, 3)
+                ctx.fillStyle = color(d.bio_flux_opt)
+                ctx.fill()
+            })
+
+        }
+
         // d3.scaleLinear()
         //     .domain([d3.min(data, d => d.bio_flux_opt),0, d3.max(data, d => d.bio_flux_opt)])
         //     .range(['#d73027','#ffff','#1a9850']);
 
-        data.forEach(d => {
-            // if(d.bio_flux_opt == 0){
-            //     var [x,y] = projection([d.x, d.y])
-            // ctx.beginPath()
-            // ctx.rect(x,y,3,3)
-            // // ctx.arc(x,y, 2, 0, 2 * Math.PI)
-            // ctx.fillStyle = "white"           
-            // ctx.fill()
-            // }else{
-            // console.log((d.bio_flux_opt))
-            // console.log(color(d.bio_flux_opt))
-            var [x,y] = projection([d.x, d.y])
-            ctx.beginPath()
-            ctx.rect(x,y,3,3)
-            // ctx.arc(x,y, 2, 0, 2 * Math.PI)
-            ctx.fillStyle = color(d.bio_flux_opt)           
-            ctx.fill()
-        // }
-        })
+        // data.forEach(d => {
 
-    });
+        //     var [x,y] = projection([d.x, d.y])
+        //     ctx.beginPath()
+        //     ctx.rect(x,y,3,3)
+        //     ctx.fillStyle = color(d.bio_flux_opt)           
+        //     ctx.fill()
+        
+        // })
+}
+//     });
 
-})
+// })
 
 
 

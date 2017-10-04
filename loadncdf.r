@@ -30,9 +30,12 @@ for (i in 1:2){
   mapPointsBio <- mutate(mapPointsBio,yymm=paste0('2012',i))
   datalist[[i]] <- mapPointsBio
   
-  #write.csv(mapPointsBio, file=paste0(substr(destfile,1,nchar(destfile)-3),".csv"), row.names=F)
+  write.csv(mapPointsBio, file=paste0(substr(destfile,1,nchar(destfile)-3),".csv"), row.names=F)
   
 }
+
+#bind all months
+x <- bind_rows(datalist)
 
 #use jsonlite to combine csvs to json object https://roadtolarissa.com/hurricane/
 
