@@ -8,13 +8,14 @@ library(maps)
 library(rasterVis)
 library(dplyr)
 library(jsonlite)
+library(tidyr)
 workdir <-'//Users//mathewbrown//projects//Rstuff//carbonFlux'
 setwd(workdir)
 
 #download several months
 datalist =list()
 
-for (i in 1:2){
+for (i in 1:12){
   site <- "ftp://aftp.cmdl.noaa.gov/products/carbontracker/co2/CT2016/fluxes/monthly/CT2016.flux1x1."
   i = sprintf("%02d", i)
   url = paste0(site,'2012',i,'.nc')
@@ -36,9 +37,20 @@ for (i in 1:2){
 
 #bind all months
 x <- bind_rows(datalist)
+saveRDS(x, file="bioPoints.rds")
+x <- readRDS("bioPoints.rds")
+sample<-x[1:10,]
+
+write.csv(x, file=paste0('2012',".csv"), row.names=F)
+
+#https://blog.rstudio.com/2016/02/02/tidyr-0-4-0/
+by_location <- x %>%
+  group_by(x, y) %>%
+  nest()
 
 #use jsonlite to combine csvs to json object https://roadtolarissa.com/hurricane/
-
+y=toJSON(by_location, pretty=TRUE)
+write(y,'nested.json')
 
 
 cname <- 'Data//CT2016.flux1x1.2012-monthly.nc'

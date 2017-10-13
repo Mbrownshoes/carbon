@@ -1,4 +1,5 @@
 *.nc
 .DS_Store
 node_modules
-Data/*.nc
+Data
+*.RData

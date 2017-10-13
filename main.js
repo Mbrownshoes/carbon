@@ -2,7 +2,7 @@
 
 var test
 
-d3.loadData(["Data/janfeb.csv","world.json"], function(err,res){
+d3.loadData(["Data/2012.csv","world.json"], function(err,res){
     animation(res[0], res[1])
 })
 
@@ -84,9 +84,11 @@ function animation(res, world){
 
         var color = d3.scaleLinear()
         .domain([d3.min(data, d => d.bio_flux_opt), 0, d3.max(data, d => d.bio_flux_opt)])
-        .range(["#081d58", "white", "red"]);
+        .range(["#00441b", "white", "red"]);
 
-        var times = ["201201","201202"]
+
+        var times = d3.map(data, function(d){return d.yymm;}).keys()
+        
         var curTimeIndex = 0
         window.animationtimer = d3.interval(() =>{
             var top = sel.node().getBoundingClientRect().top
