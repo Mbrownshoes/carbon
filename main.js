@@ -2,7 +2,7 @@
 
 var test
 
-d3.loadData(["Data/2012.csv","world.json"], function(err,res){
+d3.loadData(["2012.csv","world.json"], function(err,res){
     animation(res[0], res[1])
 })
 
