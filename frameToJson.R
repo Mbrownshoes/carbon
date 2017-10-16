@@ -64,7 +64,7 @@ frameToJSON <- function(dt,groupVars,dataVars,outfile){
   out <- makeList(b)
   
   #create test data table
-  d<-merge(dplyr::filter(b, x ==-179.5, y==89.5),dplyr::filter(b, x ==-178.5, y==89.5),all=T)
+  d<-merge(dplyr::filter(byXY, x == -85.5, y==82.5),dplyr::filter(byXY, x ==100.5, y==-53.5),all=T)
   d<-data.table(d)
   out <- makeList(d)
   
@@ -73,7 +73,7 @@ frameToJSON <- function(dt,groupVars,dataVars,outfile){
     split( x[, !bycols, with=FALSE], x[, bycols, with=FALSE] )
   }
   
-  listSplit <- mysplitDT(b, by=c("x", "y"))
+  listSplit <- mysplitDT(d, by=c("x", "y"))
   
   
   
@@ -112,33 +112,39 @@ frameToJSON <- function(dt,groupVars,dataVars,outfile){
   #   # })
   # })
   
+  # ptm <- proc.time()
+  # listLocOld =lapply(names(listSplit),function(z){
+  #   mylist = list()
+  #   for (i in 1:nrow(listSplit[[z]])){
+  #     # print(listSplit[[z]][i]$bio_flux_op)
+  #     mylist[[listSplit[[z]][i]$yymm]] = listSplit[[z]][i]$bio_flux_op
+  #     # print(mylist)
+  #   }
+  #   list(loc=z,mylist)
+  # })
+  # proc.time() - ptm
   
   listLoc =lapply(names(listSplit),function(z){
-    mylist = list()
-    print(z)
-    for (i in 1:nrow(listSplit[[z]])){
-      mylist[[listSplit[[z]][i]$yymm]] = listSplit[[z]][i]$bio_flux_op
-    }
-    list(loc=z,mylist)
-  })
-  
-  listLoc =lapply(names(listSplit),function(z){
-    mylist = list()
-    lapply(seq(nrow(listSplit[[z]])),function(i){
-    # for (i in 1:nrow(listSplit[[z]])){
-      mylist[[listSplit[[z]][i]$yymm]] = listSplit[[z]][i]$bio_flux_op
+    n=listSplit[[z]]$yymm
+    m= lapply(seq(nrow(listSplit[[z]])),function(i){
+        listSplit[[z]][i]$bio_flux_op
     })
-    list(loc=z,mylist)
+    names(m) <- n
+    return(list(loc=z,m))
   })
+
+  func <- function(xx){ c(xx, list(yymm = xx$bio_flux_op))}
   
+  # try with mapply
+  mapply(func, xx = listSplit[[z]])
   
   
   jsonOut<-toJSON(list(name="carbon",children=listLoc),pretty=FALSE)
   jsonOut=gsub("2012", "", jsonOut)
   cat(jsonOut,file='2012.json')
+  
   ################
   
-  library(dict)
   #try rearranging list
   lapply(listSplit[[z]],function(i){
     print(paste("i is ",i))

@@ -95,7 +95,7 @@ function animation(res, world){
             if (top < -500 || innerHeight < top) return
 
             drawTime(times[curTimeIndex++ % times.length])
-        },200)
+        },400)
 
         function drawTime(time){
             ctx.clearRect(0,0, width, height)
