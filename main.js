@@ -3,7 +3,6 @@
 var test
 
 d3.loadData(["flux.json","world.json"], function(err,res){
-    console.log(res)
     animation(res[0], res[1])
 })
 
@@ -123,14 +122,10 @@ function animation(res, world){
 
         window.animationtimer = d3.interval(() =>{
             
-            // debugger;
-                console.log(curTimeIndex)
-
-            // debugger;
+  
             var top = sel.node().getBoundingClientRect().top
 
             if (top < -500 || innerHeight < top) return
-                console.log(curTimeIndex)
             drawTime(times[curTimeIndex])
             // debugger;
             yearSel.transition().duration(100).text(months[curTimeIndex] +' ' +20+times[curTimeIndex].substr(0,2))
@@ -138,10 +133,8 @@ function animation(res, world){
                 //     console.log('here')
                     // return t => yearSel.text(months[curTimeIndex] +' ' +20+times[curTimeIndex].substr(0,2))
                 // })
-        console.log(times[curTimeIndex])
         curTimeIndex++
         if (curTimeIndex > 11) curTimeIndex = 0
-        console.log(curTimeIndex)
         },1000)
 
 
