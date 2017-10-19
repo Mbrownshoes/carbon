@@ -2,13 +2,15 @@
 
 var test
 
-d3.loadData(["2012.csv","world.json"], function(err,res){
+d3.loadData(["flux.json","world.json"], function(err,res){
+    console.log(res)
     animation(res[0], res[1])
 })
 
 function animation(res, world){
-    console.log(res)
+
     data = res
+    test = data
 
 
 
@@ -17,7 +19,11 @@ function animation(res, world){
     // d3.json("world.json", function(error, world) {
 
         data.forEach(function(d) {
-            d.bio_flux_opt = +d.bio_flux_opt
+            // console.log(d)
+            // d.bio_flux_opt = +d.bio_flux_opt
+            all = d.loc[0].split('.')
+            d.x = all[0]+'.'+all[1]
+            d.y = all[2]+'.'+all[3]
             // d.tot = +d.tot
         });
 
@@ -27,6 +33,8 @@ function animation(res, world){
         height = 800;
 
         var sel = d3.select('#graphic-0')
+        // var c = d3.conventions({parentSel: sel, height: 460})
+
         var ctx = sel
             .html('')
             .append('canvas')
@@ -82,31 +90,80 @@ function animation(res, world){
 
         window.points = data
 
+
+        a = []
+        data.forEach(function(d){
+            var total = 0;
+            d.totals = {}
+            
+            for (key in d.vals){
+                total += d.vals[key][0]
+                a.push(d.vals[key][0])
+                d.totals[key] = total
+            }
+            // console.log(a)
+            // d.pos = projection([d.x,d.y])
+        })
+
         var color = d3.scaleLinear()
-        .domain([d3.min(data, d => d.bio_flux_opt), 0, d3.max(data, d => d.bio_flux_opt)])
+        .domain([d3.min(a), 0, d3.max(a)])
         .range(["#00441b", "white", "red"]);
 
 
-        var times = d3.map(data, function(d){return d.yymm;}).keys()
+        // var times = d3.map(data, function(d){return d.yymm;}).keys()
+        var times = _.uniq(_.flatten(data.map(d => d3.keys(d.vals)))).sort()
+        console.log(times)
         
-        var curTimeIndex = 0
-        window.animationtimer = d3.interval(() =>{
-            var top = sel.node().getBoundingClientRect().top
-            if (top < -500 || innerHeight < top) return
+        var months =['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-            drawTime(times[curTimeIndex++ % times.length])
-        },400)
+        var yearSel = svg.append('text').text(' ')
+            .at({fontSize: 30, x: 700, y: 120})
+
+        var curTimeIndex = 0
+
+        window.animationtimer = d3.interval(() =>{
+            
+            // debugger;
+                console.log(curTimeIndex)
+
+            // debugger;
+            var top = sel.node().getBoundingClientRect().top
+
+            if (top < -500 || innerHeight < top) return
+                console.log(curTimeIndex)
+            drawTime(times[curTimeIndex])
+            // debugger;
+            yearSel.transition().duration(100).text(months[curTimeIndex] +' ' +20+times[curTimeIndex].substr(0,2))
+                // .attrTween('year-text', () => {
+                //     console.log('here')
+                    // return t => yearSel.text(months[curTimeIndex] +' ' +20+times[curTimeIndex].substr(0,2))
+                // })
+        console.log(times[curTimeIndex])
+        curTimeIndex++
+        if (curTimeIndex > 11) curTimeIndex = 0
+        console.log(curTimeIndex)
+        },1000)
+
+
 
         function drawTime(time){
             ctx.clearRect(0,0, width, height)
-            test.filter(function(d){return d.yymm == time}).forEach(d => {
-                    // console.log(d)
+            data.filter(d => d.vals[time]).forEach(d =>{
+                // console.log(d.vals[time])
                 ctx.beginPath()
                 var [x, y] = projection([d.x,d.y])
                 ctx.rect(x, y, 3, 3)
-                ctx.fillStyle = color(d.bio_flux_opt)
+                ctx.fillStyle = color(+d.vals[time][0])
                 ctx.fill()
             })
+            // data.filter(function(d){return d.yymm == time}).forEach(d => {
+            //         // console.log(d)
+            //     ctx.beginPath()
+            //     var [x, y] = projection([d.x,d.y])
+            //     ctx.rect(x, y, 3, 3)
+            //     ctx.fillStyle = color(d.bio_flux_opt)
+            //     ctx.fill()
+            // })
 
         }
 

@@ -8,6 +8,7 @@ library(rasterVis)
 library(dplyr)
 library(jsonlite)
 library(tidyr)
+library(data.table)
 workdir <-'//Users//mathewbrown//projects//Rstuff//carbonFlux'
 setwd(workdir)
 
@@ -40,7 +41,9 @@ x <- readRDS("bioPoints.rds")
 
 # remove rows with 0 flux
 # b <- data.table(x)
-b=data.table(dplyr::filter(x, bio_flux_opt !=0))
+b=dplyr::mutate(x, bio_flux_opt = round(bio_flux_opt,2))
+b=data.table(dplyr::filter(b, bio_flux_opt !=0))
+
 
 #split by location
 #use to drop split columns - works but not nested correctly
@@ -60,12 +63,12 @@ listLoc =lapply(names(byXY),function(z){
     byXY[[z]][i]$bio_flux_op
   })
   names(m) <- n
-  return(list(loc=z,m))
+  list(loc=z,vals=m)
 })
 
-jsonOut<-toJSON(list(name="carbon",children=listLoc),pretty=FALSE)
-jsonOut=gsub("2012", "", jsonOut)
-cat(jsonOut,file='2012a.json')
+jsonOut<-toJSON(listLoc,pretty=FALSE)
+jsonOut=gsub('"2012', '"12', jsonOut)
+cat(jsonOut,file='flux.json')
 
 
 # write.csv(x, file=paste0('2012',".csv"), row.names=F)

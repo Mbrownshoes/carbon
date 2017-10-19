@@ -57,6 +57,12 @@ frameToJSON <- function(dt,groupVars,dataVars,outfile){
     }
   }
   
+  library(d3r)
+  
+  d3n <- d3_nest(
+    bb,
+    value_cols="bio_flux_opt"
+  )
   
   #This will not work on a data.table
   
