@@ -66,6 +66,8 @@ listLoc =lapply(names(byXY),function(z){
   list(loc=z,vals=m)
 })
 
+save(listLoc, file = "listLoc.RData")
+
 jsonOut<-toJSON(listLoc,pretty=FALSE)
 jsonOut=gsub('"2012', '"12', jsonOut)
 cat(jsonOut,file='flux.json')
