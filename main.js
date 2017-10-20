@@ -146,17 +146,17 @@ svg.select(".legendLinear")
   .call(legendLinear);
 
 //subtitle
-svg.append('text')
-    .attr('x', 40)
-    .attr('y', 750)
-    .attr('class','subtex')
-    .text('Green means a carbon uptake by the land')
+// svg.append('text')
+//     .attr('x', 40)
+//     .attr('y', 750)
+//     .attr('class','subtex')
+//     .text('Green means a carbon uptake by the land')
 
-svg.append('text')
-    .attr('x', 600)
-    .attr('y', 750)
-    .attr('class','subtex')
-    .text('Red means a carbon release to the atmosphere')
+// svg.append('text')
+//     .attr('x', 600)
+//     .attr('y', 750)
+//     .attr('class','subtex')
+//     .text('Red means a carbon release to the atmosphere')
 
     // var times = d3.map(data, function(d){return d.yymm;}).keys()
     var times = _.uniq(_.flatten(data.map(d => d3.keys(d.vals)))).sort()
