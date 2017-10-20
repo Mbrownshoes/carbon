@@ -1,6 +1,15 @@
 //draw on a map
 var test
 
+
+d3.select('body').append("text").text("Just one sec, there's a bunch of data to load ... ")
+.at({
+            fontSize: 30,
+            x: 100,
+            y: 40
+        })
+
+
 d3.loadData(["fluxNew.json", "world.json"], function(err, res) {
     animation(res[0], res[1])
 })
