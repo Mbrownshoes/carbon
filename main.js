@@ -106,6 +106,37 @@ function animation(res, world) {
     var color = d3.scaleLinear()
         .domain([d3.min(a), 0, d3.max(a)])
         .range(["#00441b", "white", "red"]);
+    // console.log(color)
+
+    // var thresholdScale = d3.scaleThreshold()
+    //     .domain([d3.min(a), 0, d3.max(a)])
+    //     .range(["rgb(46, 73, 123)", "rgb(71, 187, 94)"]);
+
+// var linear = d3.scaleLinear()
+//   .domain([0,10])
+//   .range(["rgb(46, 73, 123)", "rgb(71, 187, 94)"]);
+
+// var svg = d3.select("svg");
+
+svg.append("g")
+  .attr("class", "legendLinear")
+  .attr("transform", "translate(40,680)");
+
+var legendLinear = d3.legendColor()
+  .shapeWidth(80)
+  .labelFormat(d3.format(".2r"))
+  .orient('horizontal')
+  .cells(10)
+  .scale(color);
+
+svg.select(".legendLinear")
+  .call(legendLinear);
+
+//subtitle
+svg.append('text')
+    .attr('x', 700)
+    .attr('y', 740)
+    .text('g C m-2 year-1')
 
 
     // var times = d3.map(data, function(d){return d.yymm;}).keys()
