@@ -163,6 +163,41 @@ svg.append("text").text("The Earth's terrestrial carbon flux")
         })
 .attr('class','h1')
 
+svg.append("text").text("Green means photosynthesis is the dominant flux, usually during the growing season,")
+.at({
+            x: 100,
+            y: 70
+        })
+.attr('class','p')
+
+svg.append("text").text("while red means respiration is dominant, usually in the winter")
+.at({
+            x: 100,
+            y: 85
+        })
+.attr('class','p')
+
+
+        //create legend
+        var legendScale = d3.scaleOrdinal()
+            .domain(['Carbon uptake', 'Carbon release'])
+            .range(['record', 'avg'])
+
+        //d3-legend
+        var legend = d3.legendColor()
+            .shapePadding(5)
+            .useClass(true)
+            .scale(legendScale);
+
+        svg.append('g')
+            .attr('transform', 'translate(30,400)')
+            .call(legend);
+
+// svg.append('text')
+//     .attr('x', 40)
+//     .attr('y', 750)
+//     .attr('class','subtex')
+
 
     var yearSel = svg.append('text').text(' ')
         .at({
