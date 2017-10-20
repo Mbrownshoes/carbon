@@ -9,6 +9,7 @@ library(dplyr)
 library(jsonlite)
 library(tidyr)
 library(data.table)
+library(ggplot2)
 workdir <-'//Users//mathewbrown//projects//Rstuff//carbonFlux'
 setwd(workdir)
 
@@ -26,7 +27,7 @@ for (i in seq(2012,2015,1)) print(y){
     ncin <- nc_open(destfile)
     bio <- raster(destfile,varname='bio_flux_opt')
     mapPointsBio <- as.data.frame(rasterToPoints(bio))
-    mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt*(12/44)*3600*24*365
+    mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt #*(44/12)*3600*24*365
     #create timestamp column
     mapPointsBio <- mutate(mapPointsBio,yymm=paste0('2012',i))
     datalist[[i]] <- mapPointsBio
@@ -39,6 +40,7 @@ x <- bind_rows(datalist)
 saveRDS(x, file="bioPoints.rds")
 x <- readRDS("bioPoints.rds")
 
+x$bio_flux_opt=x$bio_flux_opt*(44/12)*3600*24*365
 # remove rows with 0 flux
 # b <- data.table(x)
 b=dplyr::mutate(x, bio_flux_opt = round(bio_flux_opt,2))

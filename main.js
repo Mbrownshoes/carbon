@@ -102,7 +102,7 @@ function animation(res, world) {
         // console.log(a)
         // d.pos = projection([d.x,d.y])
     })
-
+    console.log(d3.max(a))
     var color = d3.scaleLinear()
         .domain([d3.min(a), 0, d3.max(a)])
         .range(["#00441b", "white", "red"]);
@@ -127,6 +127,7 @@ var legendLinear = d3.legendColor()
   .labelFormat(d3.format(".2r"))
   .orient('horizontal')
   .cells(10)
+  .title("g C m-2 year-1")
   .scale(color);
 
 svg.select(".legendLinear")
@@ -135,8 +136,9 @@ svg.select(".legendLinear")
 //subtitle
 svg.append('text')
     .attr('x', 700)
-    .attr('y', 740)
-    .text('g C m-2 year-1')
+    .attr('y', 750)
+    .attr('fontSize',8)
+    .text('negative values indicates an uptake bio the biosphere')
 
 
     // var times = d3.map(data, function(d){return d.yymm;}).keys()
