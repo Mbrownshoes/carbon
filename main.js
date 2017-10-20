@@ -122,12 +122,15 @@ svg.append("g")
   .attr("class", "legendLinear")
   .attr("transform", "translate(40,680)");
 
+m2='²'
+yr='¹'
+
 var legendLinear = d3.legendColor()
   .shapeWidth(80)
   .labelFormat(d3.format(".2r"))
   .orient('horizontal')
   .cells(10)
-  .title("g C m-2 year-1")
+  .title("g Cm\u207B"+m2 + " yr\u207B"+yr)
   .scale(color);
 
 svg.select(".legendLinear")
@@ -135,11 +138,16 @@ svg.select(".legendLinear")
 
 //subtitle
 svg.append('text')
-    .attr('x', 700)
+    .attr('x', 40)
     .attr('y', 750)
-    .attr('fontSize',8)
-    .text('negative values indicates an uptake bio the biosphere')
+    .attr('class','subtex')
+    .text('Green means a carbon uptake by the land')
 
+svg.append('text')
+    .attr('x', 600)
+    .attr('y', 750)
+    .attr('class','subtex')
+    .text('Red means a carbon release to the atmosphere')
 
     // var times = d3.map(data, function(d){return d.yymm;}).keys()
     var times = _.uniq(_.flatten(data.map(d => d3.keys(d.vals)))).sort()
