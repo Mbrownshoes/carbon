@@ -15,26 +15,30 @@ setwd(workdir)
 
 #download several months
 datalist =list()
-for (i in seq(2012,2015,1)) print(y){
+j=0
+for (yr in seq(2012,2015,1)){ print(yr)
   for (i in 1:12){
-    site <- "ftp://aftp.cmdl.noaa.gov/products/carbontracker/co2/CT2016/fluxes/monthly/CT2016.flux1x1."
+    j=j+1
+    print(d)
+    # site <- "ftp://aftp.cmdl.noaa.gov/products/carbontracker/co2/CT2016/fluxes/monthly/CT2016.flux1x1."
     i = sprintf("%02d", i)
-    url = paste0(site,'2012',i,'.nc')
+    # url = paste0(site,y,i,'.nc')
     # print(url)
-    destfile <- paste0('Data/','2012',i,'.nc')
-    download.file(url,destfile)
+    destfile <- paste0('Data/',y,i,'.nc')
+    # download.file(url,destfile)
     #create csv
     ncin <- nc_open(destfile)
     bio <- raster(destfile,varname='bio_flux_opt')
     mapPointsBio <- as.data.frame(rasterToPoints(bio))
-    mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt #*(44/12)*3600*24*365
+    # mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt #*(44/12)*3600*24*365
     #create timestamp column
-    mapPointsBio <- mutate(mapPointsBio,yymm=paste0('2012',i))
-    datalist[[i]] <- mapPointsBio
+    mapPointsBio <- mutate(mapPointsBio,yymm=paste0(yr,i))
+    datalist[[j]] <- mapPointsBio
     
     # write.csv(mapPointsBio, file=paste0(substr(destfile,1,nchar(destfile)-3),".csv"), row.names=F)
   }
 }
+
 #bind all months
 x <- bind_rows(datalist)
 saveRDS(x, file="bioPoints.rds")

@@ -1,7 +1,7 @@
 //draw on a map
 var test
 
-d3.loadData(["flux.json", "world.json"], function(err, res) {
+d3.loadData(["fluxNew.json", "world.json"], function(err, res) {
     animation(res[0], res[1])
 })
 
@@ -19,7 +19,7 @@ function animation(res, world) {
     data.forEach(function(d) {
         // console.log(d)
         // d.bio_flux_opt = +d.bio_flux_opt
-        all = d.loc[0].split('.')
+        all = d.loc.split('.')
         d.x = all[0] + '.' + all[1]
         d.y = all[2] + '.' + all[3]
         // d.tot = +d.tot
@@ -95,8 +95,8 @@ function animation(res, world) {
         d.totals = {}
 
         for (key in d.vals) {
-            total += d.vals[key][0]
-            a.push(d.vals[key][0])
+            total += d.vals[key]
+            a.push(d.vals[key])
             d.totals[key] = total
         }
         // console.log(a)
@@ -173,6 +173,7 @@ svg.append("text").text("The Earth's terrestrial carbon flux")
         .attr('class','h2')
 
     var curTimeIndex = 0
+    var monthCount = 0
 
     window.animationtimer = d3.interval(() => {
 
@@ -182,13 +183,16 @@ svg.append("text").text("The Earth's terrestrial carbon flux")
         if (top < -500 || innerHeight < top) return
         drawTime(times[curTimeIndex])
         // debugger;
-        yearSel.transition().duration(100).text(months[curTimeIndex] + ' ' + 20 + times[curTimeIndex].substr(0, 2))
+        yearSel.transition().duration(100).text(months[monthCount] + ' ' + 20 + times[curTimeIndex].substr(0, 2))
         // .attrTween('year-text', () => {
         //     console.log('here')
         // return t => yearSel.text(months[curTimeIndex] +' ' +20+times[curTimeIndex].substr(0,2))
         // })
         curTimeIndex++
-        if (curTimeIndex > 11) curTimeIndex = 0
+        monthCount++
+        // restart counters when done
+        if (monthCount > 11) monthCount = 0
+            if (curTimeIndex > times.length -1) curTimeIndex = 0
     }, 1000)
 
 
@@ -200,7 +204,7 @@ svg.append("text").text("The Earth's terrestrial carbon flux")
             ctx.beginPath()
             var [x, y] = projection([d.x, d.y])
             ctx.rect(x, y, 3, 3)
-            ctx.fillStyle = color(+d.vals[time][0])
+            ctx.fillStyle = color(+d.vals[time])
             ctx.fill()
         })
         // data.filter(function(d){return d.yymm == time}).forEach(d => {
