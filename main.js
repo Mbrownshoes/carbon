@@ -104,7 +104,7 @@ console.log('run')
         .style("fill", 'none')
         .style("stroke", '#e0e0e0')
         .style("strokeWidth", .01);
-
+if(count==2){
     window.points = data
 
 
@@ -137,7 +137,7 @@ console.log('run')
 
 // var svg = d3.select("svg");
 
-if(count==2){
+
 svg.append("g")
   .attr("class", "legendLinear")
   .attr("transform", "translate(40,680)");
@@ -155,7 +155,7 @@ var legendLinear = d3.legendColor()
 
 svg.select(".legendLinear")
   .call(legendLinear);
-}
+
 
 //subtitle
 // svg.append('text')
@@ -285,7 +285,7 @@ svg.append("text").text("while red means respiration is dominant, usually in the
     //     ctx.rect(x,y,3,3)
     //     ctx.fillStyle = color(d.bio_flux_opt)           
     //     ctx.fill()
-
+}
     // })
 }
 //     });
