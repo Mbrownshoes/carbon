@@ -73,7 +73,7 @@ function animation(res, world) {
 
     mask.append('rect')
         .attr("width", width)
-        .attr("height", height)
+        .attr("height", 680)
         .style("fill", '#fff')
 
     mask.append('path')
@@ -82,7 +82,7 @@ function animation(res, world) {
 
     svg.append('rect')
         .attr("mask", "url(#ocean)")
-        .style("fill", '#fff')
+        .style("fill", '#f7fbff')
         .attr("width", width)
         .attr("height", height)
 
@@ -114,7 +114,7 @@ function animation(res, world) {
     console.log(d3.max(a))
     var color = d3.scaleLinear()
         .domain([d3.min(a), 0, d3.max(a)])
-        .range(["#00441b", "white", "red"]);
+        .range(["#001400", "white", "red"]);
     // console.log(color)
 
     // var thresholdScale = d3.scaleThreshold()

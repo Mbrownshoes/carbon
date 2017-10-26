@@ -63,7 +63,7 @@ byXY <- mysplitDT(b, by=c("x", "y"))
 byXY=byXY[sapply(byXY,nrow) >0]
 
 #make list of lists as prep to convert to json
-listLoc =lapply(names(byXY),function(z){
+listLoc1 =lapply(names(byXY),function(z){
   n=byXY[[z]]$yymm
   m= lapply(seq(nrow(byXY[[z]])),function(i){
     byXY[[z]][i]$bio_flux_op
@@ -72,11 +72,11 @@ listLoc =lapply(names(byXY),function(z){
   list(loc=z,vals=m)
 })
 
-save(listLoc, file = "listLoc.RData")
+save(listLoc1, file = "listAllYears.RData")
 
-jsonOut<-toJSON(listLoc,pretty=FALSE)
+jsonOut<-toJSON(listLoc1,pretty=FALSE, auto_unbox = TRUE)
 jsonOut=gsub('"2012', '"12', jsonOut)
-cat(jsonOut,file='flux.json')
+cat(jsonOut,file='fluxNew.json')
 
 
 # write.csv(x, file=paste0('2012',".csv"), row.names=F)
