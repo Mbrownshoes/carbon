@@ -19,12 +19,12 @@ j=0
 for (yr in seq(2012,2015,1)){ print(yr)
   for (i in 1:12){
     j=j+1
-    print(d)
+    # print(d)
     # site <- "ftp://aftp.cmdl.noaa.gov/products/carbontracker/co2/CT2016/fluxes/monthly/CT2016.flux1x1."
     i = sprintf("%02d", i)
     # url = paste0(site,y,i,'.nc')
     # print(url)
-    destfile <- paste0('Data/',y,i,'.nc')
+    destfile <- paste0('Data/',yr,i,'.nc')
     # download.file(url,destfile)
     #create csv
     ncin <- nc_open(destfile)

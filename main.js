@@ -1,23 +1,30 @@
 //draw on a map
-var test
+// var test
 
 
-d3.select('body').append("text").text("Just one sec, there's a bunch of data to load ... ")
-.at({
-            fontSize: 30,
-            x: 100,
-            y: 40
-        })
+// d3.select('body').append("text").text("Just one sec, there's a bunch of data to load ... ")
+// .at({
+//             fontSize: 30,
+//             x: 100,
+//             y: 40
+//         })
+
+d3.loadData(["fluxJan.json", "world.json"], function(err, res) {
+    // first just load map and jan data, then animate
+    // console.log(res[1])
+    animation(res[0], res[1])
+})
 
 
 d3.loadData(["fluxNew.json", "world.json"], function(err, res) {
+    // console.log(res[1])
     animation(res[0], res[1])
 })
 
 function animation(res, world) {
-
+console.log('run')
     data = res
-    test = data
+    // test = data
 
 
 
@@ -34,7 +41,7 @@ function animation(res, world) {
         // d.tot = +d.tot
     });
 
-    test = data
+    // test = data
 
     var width = 960,
         height = 800;
@@ -111,10 +118,10 @@ function animation(res, world) {
         // console.log(a)
         // d.pos = projection([d.x,d.y])
     })
-    console.log(d3.max(a))
+    // console.log(d3.max(a))
     var color = d3.scaleLinear()
         .domain([d3.min(a), 0, d3.max(a)])
-        .range(["#001400", "white", "red"]);
+        .range(["#00441b", "white", "red"]);
     // console.log(color)
 
     // var thresholdScale = d3.scaleThreshold()
@@ -160,7 +167,7 @@ svg.select(".legendLinear")
 
     // var times = d3.map(data, function(d){return d.yymm;}).keys()
     var times = _.uniq(_.flatten(data.map(d => d3.keys(d.vals)))).sort()
-    console.log(times)
+    // console.log(times)
 
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
