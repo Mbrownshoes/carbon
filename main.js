@@ -9,15 +9,15 @@
 //             y: 40
 //         })
 var count
-d3.loadData(["fluxJan.json", "world.json"], function(err, res) {
-    // first just load map and jan data, then animate
-    // console.log(res[1])
+// d3.loadData(["fluxdaily.json", "world.json"], function(err, res) {
+//     // first just load map and jan data, then animate
+//     // console.log(res[1])
     count = 1
-    animation(res[0], res[1])
-})
+//     animation(res[0], res[1])
+// })
 
 
-d3.loadData(["fluxNew.json", "world.json"], function(err, res) {
+d3.loadData(["fluxdaily.json", "world.json"], function(err, res) {
     // console.log(res[1])
     count ++
     console.log(count)
