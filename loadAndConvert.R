@@ -16,7 +16,7 @@ setwd(workdir)
 #download several months
 datalist =list()
 j=0
-for (yr in seq(2012,2015,1)){ print(yr)
+for (yr in seq(2015,2015,1)){ print(yr)
   for (i in 1:12){
     j=j+1
     # print(d)
@@ -30,12 +30,12 @@ for (yr in seq(2012,2015,1)){ print(yr)
     ncin <- nc_open(destfile)
     bio <- raster(destfile,varname='bio_flux_opt')
     mapPointsBio <- as.data.frame(rasterToPoints(bio))
-    # mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt #*(44/12)*3600*24*365
+    mapPointsBio$bio_flux_opt = mapPointsBio$bio_flux_opt *(44/12)*3600*24*365
     #create timestamp column
     mapPointsBio <- mutate(mapPointsBio,yymm=paste0(yr,i))
     datalist[[j]] <- mapPointsBio
     
-    # write.csv(mapPointsBio, file=paste0(substr(destfile,1,nchar(destfile)-3),".csv"), row.names=F)
+    # write.csv(b, file=paste0(substr(destfile,1,nchar(destfile)-3),".csv"), row.names=F)
   }
 }
 
@@ -44,11 +44,24 @@ x <- bind_rows(datalist)
 saveRDS(x, file="bioPoints.rds")
 x <- readRDS("bioPoints.rds")
 
-x$bio_flux_opt=x$bio_flux_opt*(44/12)*3600*24*365
+# x$bio_flux_opt=x$bio_flux_opt*(44/12)*3600*24*365
 # remove rows with 0 flux
 # b <- data.table(x)
 b=dplyr::mutate(x, bio_flux_opt = round(bio_flux_opt,2))
-b=data.table(dplyr::filter(b, bio_flux_opt !=0))
+# b=data.table(dplyr::filter(b, bio_flux_opt !=0)) 
+
+# get regions data
+site = 'ftp://aftp.cmdl.noaa.gov/products/carbontracker/co2/regions.nc'
+download.file(site,'Data/regions.nc')
+ncin <- nc_open('Data/regions.nc')
+regions <- raster('Data/regions.nc',varname='ocean_regions')
+regionPoints <- as.data.frame(rasterToPoints(regions))
+
+#remove ocean from main dataframe
+excl <- data.frame(x = c(regionPoints$x, regionPoints$y),
+                   y = c(regionPoints$y, regionPoints$x))
+c<-anti_join(b, regionPoints, by = c("x", "y"))
+write.csv(c, file=paste0(substr(destfile,1,nchar(destfile)-3),".csv"), row.names=F)
 
 
 #split by location
