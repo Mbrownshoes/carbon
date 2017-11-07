@@ -472,7 +472,7 @@ loadData(width, height).then(({
     console.log('data has loaded. initializing regl...');
 
     // initialize regl
-    regl({
+    var regl = createREGL({
         canvas: canvas,
         // callback when regl is initialized
         onDone: (err, regl) => {
